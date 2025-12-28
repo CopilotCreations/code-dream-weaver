@@ -1,0 +1,17 @@
+# Oneirocode - Python Dependencies
+# A Dream Interpreter for Software Codebases
+
+# Core dependencies (Python 3.11+ standard library only for core functionality)
+# No external runtime dependencies required for basic operation
+
+# Development dependencies
+pytest>=7.4.0
+pytest-cov>=4.1.0
+black>=23.0.0
+isort>=5.12.0
+mypy>=1.5.0
+flake8>=6.1.0
+
+# Optional: LLM integration (disabled by default)
+# openai>=1.0.0
+# anthropic>=0.5.0

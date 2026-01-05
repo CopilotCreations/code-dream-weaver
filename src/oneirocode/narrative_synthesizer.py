@@ -34,6 +34,7 @@ class NarrativeSynthesizer:
     """
 
     def __init__(self):
+        """Initialize the NarrativeSynthesizer with empty report sections."""
         self.report_sections: List[str] = []
 
     def synthesize(
@@ -44,7 +45,21 @@ class NarrativeSynthesizer:
         motifs: MotifAnalysis,
         tensions: TensionAnalysis
     ) -> InterpretationReport:
-        """Synthesize all analyses into a narrative report."""
+        """Synthesize all analyses into a narrative report.
+
+        Combines structural analysis, symbolic profiling, motif detection,
+        and tension analysis into a cohesive prose interpretation.
+
+        Args:
+            repo_path: Path to the repository being analyzed.
+            structure: Parsed code structure containing metrics and patterns.
+            profile: Symbolic profile with archetype matches and traits.
+            motifs: Analysis of recurring patterns and rhythms.
+            tensions: Analysis of conflicts and contradictions.
+
+        Returns:
+            InterpretationReport containing the complete narrative in markdown.
+        """
         self.report_sections = []
         
         # Title and header
@@ -80,7 +95,12 @@ class NarrativeSynthesizer:
         )
 
     def _add_header(self, repo_path: str, structure: CodeStructure):
-        """Add report header."""
+        """Add report header with vital signs table.
+
+        Args:
+            repo_path: Path to the repository being analyzed.
+            structure: Parsed code structure containing metrics.
+        """
         header = f"""# Oneirocode Dream Interpretation
 
 ## Repository: `{repo_path}`
@@ -105,7 +125,12 @@ class NarrativeSynthesizer:
         self.report_sections.append(header)
 
     def _add_introduction(self, structure: CodeStructure, profile: SymbolicProfile):
-        """Add interpretive introduction."""
+        """Add interpretive introduction to the narrative.
+
+        Args:
+            structure: Parsed code structure for size metrics.
+            profile: Symbolic profile for archetype and trait descriptions.
+        """
         # Determine overall character
         if profile.dominant_archetypes:
             primary = profile.dominant_archetypes[0].archetype.value.replace('_', ' ').title()
@@ -125,7 +150,11 @@ What follows is not a technical review but a *symbolic interpretation* — treat
         self.report_sections.append(intro)
 
     def _add_dominant_archetypes(self, profile: SymbolicProfile):
-        """Add section on dominant archetypes."""
+        """Add section on dominant archetypes with strength indicators.
+
+        Args:
+            profile: Symbolic profile containing archetype matches.
+        """
         section_parts = ["## Dominant Archetypes\n"]
         section_parts.append("*The primary symbolic figures that inhabit this code*\n")
         
@@ -158,7 +187,11 @@ What follows is not a technical review but a *symbolic interpretation* — treat
         self.report_sections.append("\n".join(section_parts))
 
     def _add_recurring_motifs(self, motifs: MotifAnalysis):
-        """Add section on recurring motifs."""
+        """Add section on recurring motifs grouped by type.
+
+        Args:
+            motifs: Motif analysis containing patterns and rhythm signature.
+        """
         section_parts = ["## Recurring Motifs\n"]
         section_parts.append("*The patterns that repeat, carrying amplified significance*\n")
         
@@ -198,7 +231,11 @@ What follows is not a technical review but a *symbolic interpretation* — treat
         self.report_sections.append("\n".join(section_parts))
 
     def _add_unresolved_tensions(self, tensions: TensionAnalysis):
-        """Add section on unresolved tensions."""
+        """Add section on unresolved tensions and conflicts.
+
+        Args:
+            tensions: Tension analysis containing conflicts and severity levels.
+        """
         section_parts = ["## Unresolved Tensions\n"]
         section_parts.append("*The contradictions and conflicts that simmer beneath the surface*\n")
         
@@ -230,7 +267,16 @@ What follows is not a technical review but a *symbolic interpretation* — treat
         motifs: MotifAnalysis,
         tensions: TensionAnalysis
     ):
-        """Add overall psychological profile synthesis."""
+        """Add overall psychological profile synthesis.
+
+        Combines all analysis dimensions into a unified character description.
+
+        Args:
+            structure: Parsed code structure for boundary and complexity analysis.
+            profile: Symbolic profile for archetype and naming psychology.
+            motifs: Motif analysis for dominant pattern identification.
+            tensions: Tension analysis for conflict level assessment.
+        """
         section_parts = ["## Psychological Profile\n"]
         section_parts.append("*A synthesis of the codebase's character*\n")
         
@@ -318,7 +364,12 @@ What follows is not a technical review but a *symbolic interpretation* — treat
         self.report_sections.append("\n".join(section_parts))
 
     def _add_closing(self, profile: SymbolicProfile, tensions: TensionAnalysis):
-        """Add closing reflection."""
+        """Add closing reflection with optional resolution suggestions.
+
+        Args:
+            profile: Symbolic profile (reserved for future use).
+            tensions: Tension analysis containing resolution suggestions.
+        """
         section_parts = ["## Closing Reflection\n"]
         
         closing = """Code is never merely functional. Every naming choice, every structural decision, every error handled or ignored carries meaning beyond its technical purpose.
@@ -346,7 +397,15 @@ This interpretation does not judge the code as good or bad, clean or messy. It s
         self.report_sections.append("\n".join(section_parts))
 
     def _create_strength_bar(self, value: float, width: int = 10) -> str:
-        """Create a visual strength bar."""
+        """Create a visual strength bar using block characters.
+
+        Args:
+            value: Strength value between 0.0 and 1.0.
+            width: Total width of the bar in characters.
+
+        Returns:
+            String representation of the strength bar (e.g., "[████░░░░░░]").
+        """
         filled = int(value * width)
         empty = width - filled
         return f"[{'█' * filled}{'░' * empty}]"

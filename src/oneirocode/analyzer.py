@@ -92,19 +92,39 @@ class OneirocodeAnalyzer:
         return report
 
     def get_structure(self) -> Optional[CodeStructure]:
-        """Get the parsed code structure from the last analysis."""
+        """Get the parsed code structure from the last analysis.
+
+        Returns:
+            The CodeStructure from the most recent analysis, or None if
+            no analysis has been performed yet.
+        """
         return self.structure
 
     def get_profile(self) -> Optional[SymbolicProfile]:
-        """Get the symbolic profile from the last analysis."""
+        """Get the symbolic profile from the last analysis.
+
+        Returns:
+            The SymbolicProfile from the most recent analysis, or None if
+            no analysis has been performed yet.
+        """
         return self.profile
 
     def get_motifs(self) -> Optional[MotifAnalysis]:
-        """Get the motif analysis from the last analysis."""
+        """Get the motif analysis from the last analysis.
+
+        Returns:
+            The MotifAnalysis from the most recent analysis, or None if
+            no analysis has been performed yet.
+        """
         return self.motifs
 
     def get_tensions(self) -> Optional[TensionAnalysis]:
-        """Get the tension analysis from the last analysis."""
+        """Get the tension analysis from the last analysis.
+
+        Returns:
+            The TensionAnalysis from the most recent analysis, or None if
+            no analysis has been performed yet.
+        """
         return self.tensions
 
 

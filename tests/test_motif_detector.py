@@ -22,6 +22,12 @@ class TestMotif:
     """Tests for Motif dataclass."""
 
     def test_create_motif(self):
+        """Test creating a Motif instance with all required attributes.
+
+        Verifies that a Motif dataclass can be instantiated with name,
+        pattern_type, occurrences, symbolic_meaning, examples, and intensity,
+        and that all attributes are correctly stored.
+        """
         motif = Motif(
             name="The Retrieval Pattern",
             pattern_type="naming",
@@ -42,6 +48,11 @@ class TestMotifDetector:
     """Tests for MotifDetector class."""
 
     def test_detect_empty_structure(self):
+        """Test motif detection on an empty code structure.
+
+        Verifies that detecting motifs on an empty CodeStructure returns
+        a valid MotifAnalysis with an empty motifs list.
+        """
         detector = MotifDetector()
         structure = CodeStructure()
         
@@ -51,6 +62,11 @@ class TestMotifDetector:
         assert analysis.motifs == []
 
     def test_detect_naming_motifs_prefix(self):
+        """Test detection of naming motifs based on function prefixes.
+
+        Verifies that functions with common prefixes (e.g., 'get_') are
+        detected as a naming motif pattern, specifically the Retrieval pattern.
+        """
         detector = MotifDetector()
         structure = CodeStructure(
             naming_patterns=[
@@ -73,6 +89,11 @@ class TestMotifDetector:
         assert len(get_motifs) > 0
 
     def test_detect_naming_motifs_suffix(self):
+        """Test detection of naming motifs based on class suffixes.
+
+        Verifies that classes with common suffixes (e.g., 'Handler') are
+        detected as a naming motif pattern.
+        """
         detector = MotifDetector()
         structure = CodeStructure(
             naming_patterns=[
@@ -92,6 +113,11 @@ class TestMotifDetector:
         assert len(naming_motifs) > 0
 
     def test_detect_structural_guard_heavy(self):
+        """Test detection of structural motifs with heavy guard clause usage.
+
+        Verifies that code with many guard clauses is detected as a
+        fortress/guard structural pattern.
+        """
         detector = MotifDetector()
         structure = CodeStructure(
             guard_clauses=[
@@ -110,6 +136,11 @@ class TestMotifDetector:
         assert len(structural_motifs) > 0
 
     def test_detect_structural_try_heavy(self):
+        """Test detection of structural motifs with heavy try-except usage.
+
+        Verifies that code with many error handlers is detected as an
+        anxiety structural pattern.
+        """
         detector = MotifDetector()
         structure = CodeStructure(
             error_handlers=[
@@ -128,6 +159,11 @@ class TestMotifDetector:
         assert len(structural_motifs) > 0
 
     def test_detect_behavioral_silencing(self):
+        """Test detection of behavioral silencing pattern.
+
+        Verifies that code with suppressed exceptions is detected as a
+        silencing behavioral pattern.
+        """
         detector = MotifDetector()
         structure = CodeStructure(
             error_handlers=[
@@ -146,6 +182,11 @@ class TestMotifDetector:
         assert len(silencing_motifs) > 0
 
     def test_detect_behavioral_null_watch(self):
+        """Test detection of behavioral null watch pattern.
+
+        Verifies that code with many null checks is detected as a
+        Void Watch behavioral pattern.
+        """
         detector = MotifDetector()
         structure = CodeStructure(
             defensive_patterns=[
@@ -165,6 +206,11 @@ class TestMotifDetector:
         assert len(void_watch) > 0
 
     def test_detect_rhythmic_patterns(self):
+        """Test detection of rhythmic patterns in code structure.
+
+        Verifies that the detector identifies rhythmic patterns based on
+        function-to-class ratios and generates a rhythm signature.
+        """
         detector = MotifDetector()
         structure = CodeStructure(
             function_count=50,
@@ -182,6 +228,11 @@ class TestMotifDetector:
         assert len(rhythmic_motifs) > 0
 
     def test_detect_repetition_motif(self):
+        """Test detection of repetition motifs in function structures.
+
+        Verifies that repeated function signatures and body patterns are
+        detected as a Ritual of Repetition structural pattern.
+        """
         detector = MotifDetector()
         structure = CodeStructure(
             repetition_motifs={
@@ -200,6 +251,12 @@ class TestMotifDetector:
         assert len(repetition_motifs) > 0
 
     def test_pattern_diversity(self):
+        """Test detection of diverse pattern types in complex code.
+
+        Verifies that the detector identifies multiple pattern types
+        (naming, structural, behavioral) when analyzing code with
+        various programming patterns.
+        """
         detector = MotifDetector()
         structure = CodeStructure(
             naming_patterns=[
@@ -230,6 +287,11 @@ class TestMotifDetector:
         assert len(pattern_types) >= 2
 
     def test_dominant_pattern(self):
+        """Test identification of dominant pattern in analysis.
+
+        Verifies that when a single pattern type is prevalent, the
+        detector correctly identifies it as the dominant pattern.
+        """
         detector = MotifDetector()
         structure = CodeStructure(
             naming_patterns=[

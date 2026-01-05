@@ -22,6 +22,11 @@ class TestInterpretationReport:
     """Tests for InterpretationReport dataclass."""
 
     def test_create_report(self):
+        """Test that an InterpretationReport can be created with valid attributes.
+
+        Verifies that the dataclass correctly stores and returns the title
+        and word_count fields.
+        """
         report = InterpretationReport(
             title="Test Report",
             generated_at="2024-01-01T00:00:00",
@@ -37,6 +42,11 @@ class TestNarrativeSynthesizer:
     """Tests for NarrativeSynthesizer class."""
 
     def test_synthesize_empty_analysis(self):
+        """Test synthesis with empty analysis data.
+
+        Verifies that the synthesizer produces a valid InterpretationReport
+        even when all input analysis objects are empty/default.
+        """
         synthesizer = NarrativeSynthesizer()
         
         structure = CodeStructure()
@@ -57,6 +67,11 @@ class TestNarrativeSynthesizer:
         assert report.word_count > 0
 
     def test_report_contains_header(self):
+        """Test that the report contains a header section with code metrics.
+
+        Verifies that the generated report includes the Oneirocode title
+        and displays file count and line count metrics.
+        """
         synthesizer = NarrativeSynthesizer()
         
         structure = CodeStructure(
@@ -84,6 +99,11 @@ class TestNarrativeSynthesizer:
         assert "1,000" in report.content
 
     def test_report_contains_archetypes(self):
+        """Test that the report includes archetype information.
+
+        Verifies that when a symbolic profile contains dominant archetypes,
+        the report displays them with their names and strength percentages.
+        """
         synthesizer = NarrativeSynthesizer()
         
         structure = CodeStructure(function_count=10)
@@ -114,6 +134,11 @@ class TestNarrativeSynthesizer:
         assert "80%" in report.content
 
     def test_report_contains_motifs(self):
+        """Test that the report includes recurring motif information.
+
+        Verifies that when motif analysis contains detected motifs,
+        the report displays them in a dedicated section.
+        """
         synthesizer = NarrativeSynthesizer()
         
         structure = CodeStructure(function_count=10)
@@ -146,6 +171,11 @@ class TestNarrativeSynthesizer:
         assert "Retrieval Pattern" in report.content
 
     def test_report_contains_tensions(self):
+        """Test that the report includes unresolved tension information.
+
+        Verifies that when tension analysis contains detected tensions,
+        the report displays them with their names and types.
+        """
         synthesizer = NarrativeSynthesizer()
         
         structure = CodeStructure(function_count=10)
@@ -179,6 +209,11 @@ class TestNarrativeSynthesizer:
         assert "contradiction" in report.content.lower()
 
     def test_report_contains_psychological_profile(self):
+        """Test that the report includes a psychological profile section.
+
+        Verifies that when behavioral traits are present in the symbolic
+        profile, the report includes a psychological profile section.
+        """
         synthesizer = NarrativeSynthesizer()
         
         structure = CodeStructure(
@@ -203,6 +238,11 @@ class TestNarrativeSynthesizer:
         assert "Psychological Profile" in report.content
 
     def test_report_contains_closing(self):
+        """Test that the report includes a closing reflection section.
+
+        Verifies that the generated report ends with a closing reflection
+        that references the dreamer metaphor.
+        """
         synthesizer = NarrativeSynthesizer()
         
         structure = CodeStructure(function_count=10)
@@ -223,6 +263,11 @@ class TestNarrativeSynthesizer:
         assert "dreamer" in report.content.lower()
 
     def test_report_contains_resolution_suggestions(self):
+        """Test that the report includes resolution suggestions for tensions.
+
+        Verifies that when tension analysis includes resolution suggestions,
+        the report displays them in a 'Paths Forward' section.
+        """
         synthesizer = NarrativeSynthesizer()
         
         structure = CodeStructure(function_count=10)
@@ -256,6 +301,11 @@ class TestNarrativeSynthesizer:
         assert "Paths Forward" in report.content
 
     def test_strength_bar_creation(self):
+        """Test the strength bar visual representation helper method.
+
+        Verifies that _create_strength_bar produces correct visual bars
+        with filled and empty characters proportional to the strength value.
+        """
         synthesizer = NarrativeSynthesizer()
         
         bar_full = synthesizer._create_strength_bar(1.0)
@@ -268,6 +318,11 @@ class TestNarrativeSynthesizer:
         assert bar_half.count("░") == 5
 
     def test_word_count_accuracy(self):
+        """Test that the report word count is accurate.
+
+        Verifies that the word_count field in the report matches the actual
+        number of words in the content and exceeds a minimum threshold.
+        """
         synthesizer = NarrativeSynthesizer()
         
         structure = CodeStructure(function_count=10)

@@ -91,10 +91,23 @@ class MotifDetector:
     }
 
     def __init__(self):
+        """Initialize the MotifDetector with an empty analysis."""
         self.analysis = MotifAnalysis()
 
     def detect(self, structure: CodeStructure) -> MotifAnalysis:
-        """Perform complete motif detection on code structure."""
+        """Perform complete motif detection on code structure.
+
+        Analyzes the given code structure to identify naming, structural,
+        behavioral, and rhythmic motifs, then combines and ranks them.
+
+        Args:
+            structure: The parsed code structure containing functions, classes,
+                naming patterns, and other structural elements to analyze.
+
+        Returns:
+            A MotifAnalysis object containing all detected motifs, the rhythm
+            signature, dominant pattern, and pattern diversity score.
+        """
         self.analysis = MotifAnalysis()
         
         # Detect naming motifs
@@ -129,7 +142,19 @@ class MotifDetector:
         return self.analysis
 
     def _detect_naming_motifs(self, structure: CodeStructure) -> List[Motif]:
-        """Detect recurring naming patterns."""
+        """Detect recurring naming patterns in the code structure.
+
+        Analyzes prefixes and suffixes in naming patterns to identify
+        recurring conventions and assigns symbolic meanings to them.
+
+        Args:
+            structure: The parsed code structure containing naming patterns
+                to analyze for recurring prefixes and suffixes.
+
+        Returns:
+            A list of Motif objects representing significant naming patterns
+            (those occurring 3 or more times).
+        """
         motifs = []
         
         # Count prefix occurrences
@@ -187,7 +212,20 @@ class MotifDetector:
         return motifs
 
     def _detect_structural_motifs(self, structure: CodeStructure) -> List[Motif]:
-        """Detect recurring structural patterns."""
+        """Detect recurring structural patterns in the code.
+
+        Analyzes repetition motifs, guard clauses, error handlers, and
+        nesting depths to identify structural patterns like fortress-style
+        defensive coding or labyrinthine deep nesting.
+
+        Args:
+            structure: The parsed code structure containing guard clauses,
+                error handlers, nesting depths, and repetition information.
+
+        Returns:
+            A list of Motif objects representing significant structural
+            patterns found in the code.
+        """
         motifs = []
         
         # Analyze repetition motifs
@@ -262,7 +300,20 @@ class MotifDetector:
         return motifs
 
     def _detect_behavioral_motifs(self, structure: CodeStructure) -> List[Motif]:
-        """Detect recurring behavioral patterns."""
+        """Detect recurring behavioral patterns in error handling and defense.
+
+        Analyzes how the code handles errors (suppress, reraise, transform,
+        log, handle) and defensive patterns (null checks, type checks,
+        bounds checks, assertions).
+
+        Args:
+            structure: The parsed code structure containing error handlers
+                and defensive patterns to analyze for behavioral trends.
+
+        Returns:
+            A list of Motif objects representing significant behavioral
+            patterns (those occurring 3 or more times).
+        """
         motifs = []
         
         # Error handling behavior patterns
@@ -324,7 +375,22 @@ class MotifDetector:
         return motifs
 
     def _detect_rhythmic_patterns(self, structure: CodeStructure) -> Tuple[List[Motif], str]:
-        """Detect rhythmic patterns in code organization."""
+        """Detect rhythmic patterns in code organization.
+
+        Analyzes the function-to-class ratio and average function size to
+        determine the code's organizational rhythm (e.g., function-heavy,
+        class-heavy, procedural) and form (short, medium, long).
+
+        Args:
+            structure: The parsed code structure containing function count,
+                class count, and total lines for rhythm analysis.
+
+        Returns:
+            A tuple containing:
+                - A list of Motif objects representing the detected rhythm
+                - A string signature describing the rhythm pattern
+                  (e.g., "function-heavy-short-form")
+        """
         motifs = []
         rhythm_parts = []
         

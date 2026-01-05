@@ -70,6 +70,11 @@ class ASTVisitor(ast.NodeVisitor):
     """Custom AST visitor for extracting code patterns."""
 
     def __init__(self, file_path: str):
+        """Initialize the AST visitor.
+
+        Args:
+            file_path: Path to the file being visited.
+        """
         self.file_path = file_path
         self.naming_patterns: List[NamingPattern] = []
         self.guard_clauses: List[GuardClause] = []
@@ -83,7 +88,15 @@ class ASTVisitor(ast.NodeVisitor):
         self.structure_signatures: List[str] = []
 
     def _extract_prefix_suffix(self, name: str) -> tuple:
-        """Extract common prefixes and suffixes from names."""
+        """Extract common prefixes and suffixes from names.
+
+        Args:
+            name: The identifier name to analyze.
+
+        Returns:
+            A tuple of (prefix, suffix) where each is either a matched
+            string or None if no common prefix/suffix was found.
+        """
         prefixes = ['get_', 'set_', 'is_', 'has_', 'can_', 'do_', 'make_', 
                     'create_', 'build_', 'init_', 'validate_', 'check_', 
                     'process_', 'handle_', '_']
@@ -107,6 +120,11 @@ class ASTVisitor(ast.NodeVisitor):
         return found_prefix, found_suffix
 
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+        """Visit a function definition node.
+
+        Args:
+            node: The FunctionDef AST node to process.
+        """
         self.function_count += 1
         prev_function = self.current_function
         self.current_function = node.name
@@ -138,10 +156,20 @@ class ASTVisitor(ast.NodeVisitor):
         self.current_function = prev_function
 
     def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
+        """Visit an async function definition node.
+
+        Args:
+            node: The AsyncFunctionDef AST node to process.
+        """
         # Treat async functions similarly
         self.visit_FunctionDef(node)  # type: ignore
 
     def visit_ClassDef(self, node: ast.ClassDef) -> None:
+        """Visit a class definition node.
+
+        Args:
+            node: The ClassDef AST node to process.
+        """
         self.class_count += 1
         prefix, suffix = self._extract_prefix_suffix(node.name)
         self.naming_patterns.append(NamingPattern(
@@ -155,6 +183,11 @@ class ASTVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_Name(self, node: ast.Name) -> None:
+        """Visit a name node to track constant naming patterns.
+
+        Args:
+            node: The Name AST node to process.
+        """
         # Track variable naming patterns (constants)
         if node.id.isupper() and len(node.id) > 1:
             self.naming_patterns.append(NamingPattern(
@@ -166,6 +199,11 @@ class ASTVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_Try(self, node: ast.Try) -> None:
+        """Visit a try/except block to extract error handling patterns.
+
+        Args:
+            node: The Try AST node to process.
+        """
         for handler in node.handlers:
             exception_types = []
             if handler.type:
@@ -191,11 +229,21 @@ class ASTVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_If(self, node: ast.If) -> None:
+        """Visit an if statement to check for defensive patterns.
+
+        Args:
+            node: The If AST node to process.
+        """
         # Check for defensive patterns
         self._check_defensive_patterns(node)
         self.generic_visit(node)
 
     def visit_Assert(self, node: ast.Assert) -> None:
+        """Visit an assert statement to track defensive patterns.
+
+        Args:
+            node: The Assert AST node to process.
+        """
         self.defensive_patterns.append(DefensivePattern(
             file_path=self.file_path,
             line_number=node.lineno,
@@ -205,7 +253,14 @@ class ASTVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
     def _check_guard_clauses(self, node: ast.FunctionDef) -> None:
-        """Identify guard clauses at function start."""
+        """Identify guard clauses at the start of a function.
+
+        Checks the first 3 statements of a function body for early
+        return or raise patterns that serve as guard clauses.
+
+        Args:
+            node: The FunctionDef AST node to analyze.
+        """
         for i, stmt in enumerate(node.body[:3]):  # Check first 3 statements
             if isinstance(stmt, ast.If):
                 # Check if the if body contains early exit
@@ -230,7 +285,14 @@ class ASTVisitor(ast.NodeVisitor):
                         ))
 
     def _check_defensive_patterns(self, node: ast.If) -> None:
-        """Identify defensive programming patterns in if statements."""
+        """Identify defensive programming patterns in if statements.
+
+        Detects null checks and type checks that indicate defensive
+        programming practices.
+
+        Args:
+            node: The If AST node to analyze.
+        """
         condition = node.test
         
         # Null checks: if x is None, if x is not None, if not x
@@ -257,7 +319,15 @@ class ASTVisitor(ast.NodeVisitor):
                 ))
 
     def _determine_handler_action(self, handler: ast.ExceptHandler) -> str:
-        """Determine what action an exception handler takes."""
+        """Determine what action an exception handler takes.
+
+        Args:
+            handler: The ExceptHandler AST node to analyze.
+
+        Returns:
+            A string describing the handler action: 'suppress', 'reraise',
+            'transform', 'log', or 'handle'.
+        """
         if not handler.body:
             return 'suppress'
         
@@ -278,7 +348,14 @@ class ASTVisitor(ast.NodeVisitor):
         return 'handle'
 
     def _calculate_max_nesting(self, node: ast.AST) -> int:
-        """Calculate maximum nesting depth within a node."""
+        """Calculate maximum nesting depth within a node.
+
+        Args:
+            node: The AST node to analyze for nesting depth.
+
+        Returns:
+            The maximum nesting depth found within the node.
+        """
         max_depth = 0
         
         for child in ast.walk(node):
@@ -289,7 +366,15 @@ class ASTVisitor(ast.NodeVisitor):
         return max_depth
 
     def _get_node_depth(self, target: ast.AST, root: ast.AST) -> int:
-        """Get the nesting depth of a node relative to root."""
+        """Get the nesting depth of a node relative to root.
+
+        Args:
+            target: The AST node to find the depth of.
+            root: The root AST node to measure depth from.
+
+        Returns:
+            The nesting depth of target relative to root.
+        """
         depth = 0
         for node in ast.walk(root):
             if node is target:
@@ -300,7 +385,17 @@ class ASTVisitor(ast.NodeVisitor):
         return depth
 
     def _create_structure_signature(self, node: ast.FunctionDef) -> str:
-        """Create a structural signature for pattern matching."""
+        """Create a structural signature for pattern matching.
+
+        Generates a string signature based on function structure including
+        argument count, decorators, body structure, and return presence.
+
+        Args:
+            node: The FunctionDef AST node to create a signature for.
+
+        Returns:
+            A pipe-delimited string representing the function's structure.
+        """
         parts = []
         
         # Parameter count
@@ -327,10 +422,19 @@ class ASTParser:
     """Main parser for analyzing Python codebases."""
 
     def __init__(self):
+        """Initialize the AST parser with an empty code structure."""
         self.structure = CodeStructure()
 
     def parse_file(self, file_path: Path) -> Optional[ASTVisitor]:
-        """Parse a single Python file."""
+        """Parse a single Python file.
+
+        Args:
+            file_path: Path to the Python file to parse.
+
+        Returns:
+            An ASTVisitor containing extracted patterns, or None if the
+            file could not be parsed due to syntax or encoding errors.
+        """
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
@@ -345,7 +449,20 @@ class ASTParser:
             return None
 
     def parse_repository(self, repo_path: str) -> CodeStructure:
-        """Parse all Python files in a repository."""
+        """Parse all Python files in a repository.
+
+        Recursively finds and parses all Python files, excluding common
+        non-source directories like venv, node_modules, __pycache__, etc.
+
+        Args:
+            repo_path: Path to the repository root directory.
+
+        Returns:
+            A CodeStructure containing aggregated patterns from all files.
+
+        Raises:
+            FileNotFoundError: If the repository path does not exist.
+        """
         repo = Path(repo_path)
         
         if not repo.exists():

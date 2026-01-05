@@ -14,7 +14,14 @@ from .analyzer import OneirocodeAnalyzer
 
 
 def _ensure_utf8_stdout():
-    """Ensure stdout uses UTF-8 encoding on Windows."""
+    """Ensure stdout uses UTF-8 encoding on Windows.
+
+    Reconfigures sys.stdout to use UTF-8 encoding with error replacement
+    to prevent encoding errors when printing Unicode characters on Windows.
+
+    Returns:
+        None
+    """
     if sys.platform == 'win32':
         if hasattr(sys.stdout, 'reconfigure'):
             sys.stdout.reconfigure(encoding='utf-8', errors='replace')
@@ -23,7 +30,15 @@ def _ensure_utf8_stdout():
 
 
 def create_parser() -> argparse.ArgumentParser:
-    """Create the argument parser for the CLI."""
+    """Create the argument parser for the CLI.
+
+    Configures the main argument parser with version information and
+    subcommands for the Oneirocode CLI application.
+
+    Returns:
+        argparse.ArgumentParser: The configured argument parser with all
+            subcommands and arguments defined.
+    """
     parser = argparse.ArgumentParser(
         prog='oneirocode',
         description='Oneirocode - A Dream Interpreter for Software Codebases',
@@ -75,7 +90,21 @@ def create_parser() -> argparse.ArgumentParser:
 
 
 def run_analyze(args: argparse.Namespace) -> int:
-    """Run the analyze command."""
+    """Run the analyze command.
+
+    Validates the repository path, performs codebase analysis, and outputs
+    the dream interpretation report to stdout or a specified file.
+
+    Args:
+        args: Parsed command-line arguments containing:
+            - repo_path: Path to the repository to analyze.
+            - output: Optional output file path (None for stdout).
+            - llm: Whether to enable LLM-enhanced interpretation.
+            - quiet: Whether to suppress progress messages.
+
+    Returns:
+        int: Exit code (0 for success, 1 for error).
+    """
     repo_path = args.repo_path
     output_path = args.output
     llm_enabled = args.llm
@@ -139,7 +168,18 @@ def run_analyze(args: argparse.Namespace) -> int:
 
 
 def main(argv: list = None) -> int:
-    """Main CLI entrypoint."""
+    """Main CLI entrypoint.
+
+    Parses command-line arguments and dispatches to the appropriate
+    command handler. If no command is provided, prints help and exits.
+
+    Args:
+        argv: Command-line arguments to parse. Defaults to None, which
+            causes argparse to use sys.argv[1:].
+
+    Returns:
+        int: Exit code (0 for success, non-zero for error).
+    """
     _ensure_utf8_stdout()
     
     parser = create_parser()

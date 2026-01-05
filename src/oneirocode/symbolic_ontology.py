@@ -133,10 +133,20 @@ class SymbolicOntology:
     NESTING_LABYRINTH_THRESHOLD = 4  # Average nesting depth
 
     def __init__(self):
+        """Initialize the SymbolicOntology with an empty profile."""
         self.profile = SymbolicProfile()
 
     def analyze(self, structure: CodeStructure) -> SymbolicProfile:
-        """Perform complete symbolic analysis of code structure."""
+        """Perform complete symbolic analysis of code structure.
+
+        Args:
+            structure: The parsed code structure containing naming patterns,
+                guard clauses, error handlers, and defensive patterns.
+
+        Returns:
+            A SymbolicProfile containing dominant and secondary archetypes,
+            naming themes, and behavioral traits.
+        """
         self.profile = SymbolicProfile()
         
         archetype_scores: Dict[Archetype, Tuple[float, List[str], List[Tuple[str, int]]]] = {}
@@ -190,7 +200,17 @@ class SymbolicOntology:
         evidence: str,
         location: Tuple[str, int] = None
     ):
-        """Add score to an archetype with evidence."""
+        """Add score to an archetype with supporting evidence.
+
+        Args:
+            scores: Dictionary mapping archetypes to their accumulated scores,
+                evidence lists, and source locations.
+            archetype: The archetype to add score to.
+            delta: The score increment to add.
+            evidence: Description of the evidence supporting this archetype.
+            location: Optional tuple of (file_path, line_number) where the
+                pattern was detected.
+        """
         if archetype not in scores:
             scores[archetype] = (0.0, [], [])
         
@@ -204,7 +224,16 @@ class SymbolicOntology:
         structure: CodeStructure,
         scores: Dict[Archetype, Tuple[float, List[str], List[Tuple[str, int]]]]
     ):
-        """Analyze naming patterns for archetypal significance."""
+        """Analyze naming patterns for archetypal significance.
+
+        Examines function and variable naming conventions to detect
+        symbolic patterns like guardian prefixes (validate_, check_) or
+        builder suffixes (_factory, _builder).
+
+        Args:
+            structure: The parsed code structure containing naming patterns.
+            scores: Dictionary to accumulate archetype scores and evidence.
+        """
         for pattern in structure.naming_patterns:
             # Check prefixes
             if pattern.prefix and pattern.prefix in self.NAMING_ARCHETYPES:
@@ -237,7 +266,15 @@ class SymbolicOntology:
         structure: CodeStructure,
         scores: Dict[Archetype, Tuple[float, List[str], List[Tuple[str, int]]]]
     ):
-        """Analyze guard clauses for boundary-setting patterns."""
+        """Analyze guard clauses for boundary-setting patterns.
+
+        Examines early return/raise statements at function entry points
+        to detect patterns of vigilance, anxiety, or authoritarian control.
+
+        Args:
+            structure: The parsed code structure containing guard clauses.
+            scores: Dictionary to accumulate archetype scores and evidence.
+        """
         if structure.function_count == 0:
             return
         
@@ -281,7 +318,15 @@ class SymbolicOntology:
         structure: CodeStructure,
         scores: Dict[Archetype, Tuple[float, List[str], List[Tuple[str, int]]]]
     ):
-        """Analyze error handling for anxiety management patterns."""
+        """Analyze error handling for anxiety management patterns.
+
+        Examines try/except blocks to detect patterns of suppression,
+        denial, transformation, or vigilant logging of errors.
+
+        Args:
+            structure: The parsed code structure containing error handlers.
+            scores: Dictionary to accumulate archetype scores and evidence.
+        """
         if not structure.error_handlers:
             return
         
@@ -326,7 +371,15 @@ class SymbolicOntology:
         structure: CodeStructure,
         scores: Dict[Archetype, Tuple[float, List[str], List[Tuple[str, int]]]]
     ):
-        """Analyze defensive patterns for trust/paranoia levels."""
+        """Analyze defensive patterns for trust and paranoia levels.
+
+        Examines assertions, null checks, and type validations to assess
+        the codebase's relationship with uncertainty and trust.
+
+        Args:
+            structure: The parsed code structure containing defensive patterns.
+            scores: Dictionary to accumulate archetype scores and evidence.
+        """
         if structure.function_count == 0:
             return
         
@@ -364,7 +417,15 @@ class SymbolicOntology:
         structure: CodeStructure,
         scores: Dict[Archetype, Tuple[float, List[str], List[Tuple[str, int]]]]
     ):
-        """Analyze structural complexity for maze/simplicity patterns."""
+        """Analyze structural complexity for maze or simplicity patterns.
+
+        Examines nesting depths and repetition motifs to detect labyrinthine
+        complexity, minimalist tendencies, or ritualistic patterns.
+
+        Args:
+            structure: The parsed code structure with nesting and repetition data.
+            scores: Dictionary to accumulate archetype scores and evidence.
+        """
         if structure.nesting_depths:
             avg_nesting = sum(structure.nesting_depths) / len(structure.nesting_depths)
             max_nesting = max(structure.nesting_depths) if structure.nesting_depths else 0
@@ -397,7 +458,14 @@ class SymbolicOntology:
                 )
 
     def _extract_naming_themes(self, structure: CodeStructure):
-        """Extract dominant naming themes from patterns."""
+        """Extract dominant naming themes from patterns.
+
+        Aggregates prefixes and suffixes from naming patterns to identify
+        the most common naming conventions used in the codebase.
+
+        Args:
+            structure: The parsed code structure containing naming patterns.
+        """
         theme_counts: Dict[str, int] = {}
         
         for pattern in structure.naming_patterns:
@@ -411,7 +479,14 @@ class SymbolicOntology:
         self.profile.naming_themes = dict(sorted_themes[:10])
 
     def _determine_behavioral_traits(self, structure: CodeStructure):
-        """Determine high-level behavioral traits."""
+        """Determine high-level behavioral traits from code patterns.
+
+        Synthesizes analysis results into descriptive traits like
+        "Error-avoidant", "Hyper-vigilant", or "Simplicity-seeking".
+
+        Args:
+            structure: The parsed code structure to analyze for traits.
+        """
         traits = []
         
         # Error handling behavior
@@ -450,7 +525,15 @@ class SymbolicOntology:
 
 
 def get_archetype_description(archetype: Archetype) -> str:
-    """Get a symbolic description for an archetype."""
+    """Get a symbolic description for an archetype.
+
+    Args:
+        archetype: The archetype to describe.
+
+    Returns:
+        A poetic, interpretive description of the archetype's meaning
+        and psychological significance in code.
+    """
     descriptions = {
         Archetype.GUARDIAN: "The Guardian stands at the threshold, ensuring only the worthy may pass. This code expresses a protective instinct, validating and verifying before proceeding.",
         

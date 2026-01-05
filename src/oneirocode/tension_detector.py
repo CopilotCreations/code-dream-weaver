@@ -42,10 +42,24 @@ class TensionDetector:
     """
 
     def __init__(self):
+        """Initialize the TensionDetector with an empty analysis."""
         self.analysis = TensionAnalysis()
 
     def detect(self, structure: CodeStructure) -> TensionAnalysis:
-        """Perform complete tension detection on code structure."""
+        """Perform complete tension detection on code structure.
+
+        Analyzes the code structure to identify contradictions, abandonments,
+        over-engineering, and under-engineering patterns.
+
+        Args:
+            structure: The parsed code structure containing functions, classes,
+                error handlers, and defensive patterns to analyze.
+
+        Returns:
+            A TensionAnalysis object containing detected tensions sorted by
+            severity, overall tension level, primary conflict, and resolution
+            suggestions.
+        """
         self.analysis = TensionAnalysis()
         
         # Detect various types of tensions
@@ -73,7 +87,19 @@ class TensionDetector:
         return self.analysis
 
     def _detect_contradictions(self, structure: CodeStructure) -> List[Tension]:
-        """Detect contradictory patterns in code."""
+        """Detect contradictory patterns in code.
+
+        Identifies tensions where the code exhibits opposing behaviors, such as
+        heavy validation combined with error suppression, or defensive patterns
+        paired with broad exception catching.
+
+        Args:
+            structure: The parsed code structure to analyze for contradictions.
+
+        Returns:
+            A list of Tension objects representing detected contradictions,
+            each with symbolic interpretation and severity score.
+        """
         tensions = []
         
         # Contradiction: Heavy validation but also heavy error suppression
@@ -128,7 +154,18 @@ class TensionDetector:
         return tensions
 
     def _detect_abandonments(self, structure: CodeStructure) -> List[Tension]:
-        """Detect patterns suggesting abandoned or incomplete work."""
+        """Detect patterns suggesting abandoned or incomplete work.
+
+        Identifies work-in-progress indicators in naming conventions (TODO, FIXME,
+        HACK, etc.) and empty exception handlers that suggest unfinished intentions.
+
+        Args:
+            structure: The parsed code structure to analyze for abandonment patterns.
+
+        Returns:
+            A list of Tension objects representing detected abandonments,
+            each with symbolic interpretation and severity score.
+        """
         tensions = []
         
         # Look for naming patterns that suggest work in progress
@@ -166,7 +203,18 @@ class TensionDetector:
         return tensions
 
     def _detect_over_engineering(self, structure: CodeStructure) -> List[Tension]:
-        """Detect patterns suggesting over-engineering."""
+        """Detect patterns suggesting over-engineering.
+
+        Identifies excessive defensive patterns, overwhelming error handling,
+        and deep nesting that indicate paranoid or overly complex code design.
+
+        Args:
+            structure: The parsed code structure to analyze for over-engineering.
+
+        Returns:
+            A list of Tension objects representing detected over-engineering
+            patterns, each with symbolic interpretation and severity score.
+        """
         tensions = []
         
         # Check for excessive defensive patterns relative to code size
@@ -213,7 +261,18 @@ class TensionDetector:
         return tensions
 
     def _detect_under_engineering(self, structure: CodeStructure) -> List[Tension]:
-        """Detect patterns suggesting under-engineering."""
+        """Detect patterns suggesting under-engineering.
+
+        Identifies lack of error handling, missing defensive patterns, and
+        absence of structural organization that indicate insufficient care.
+
+        Args:
+            structure: The parsed code structure to analyze for under-engineering.
+
+        Returns:
+            A list of Tension objects representing detected under-engineering
+            patterns, each with symbolic interpretation and severity score.
+        """
         tensions = []
         
         # Check for lack of error handling
@@ -252,7 +311,11 @@ class TensionDetector:
         return tensions
 
     def _generate_resolution_suggestions(self):
-        """Generate symbolic suggestions for resolving tensions."""
+        """Generate symbolic suggestions for resolving tensions.
+
+        Creates human-readable suggestions for addressing each detected tension
+        based on its type, storing up to 5 suggestions in the analysis results.
+        """
         suggestions = []
         
         for tension in self.analysis.tensions:

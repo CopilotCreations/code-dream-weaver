@@ -22,6 +22,12 @@ class TestTension:
     """Tests for Tension dataclass."""
 
     def test_create_tension(self):
+        """Test creating a Tension instance with all required fields.
+
+        Verifies that a Tension object can be instantiated with name, type,
+        description, symbolic interpretation, severity, and locations, and
+        that all fields are correctly stored.
+        """
         tension = Tension(
             name="The Guardian Who Closes Their Eyes",
             tension_type="contradiction",
@@ -41,6 +47,11 @@ class TestTensionDetector:
     """Tests for TensionDetector class."""
 
     def test_detect_empty_structure(self):
+        """Test tension detection on an empty code structure.
+
+        Verifies that detecting tensions on an empty CodeStructure returns
+        a TensionAnalysis with no tensions and zero overall tension level.
+        """
         detector = TensionDetector()
         structure = CodeStructure()
         
@@ -51,6 +62,12 @@ class TestTensionDetector:
         assert analysis.overall_tension_level == 0.0
 
     def test_detect_contradiction_guard_and_suppress(self):
+        """Test detection of contradiction between guards and error suppression.
+
+        Verifies that when code has both vigilant guard clauses and error
+        suppression handlers, the detector identifies the 'Guardian Who Closes
+        Their Eyes' contradiction tension.
+        """
         detector = TensionDetector()
         structure = CodeStructure(
             guard_clauses=[
@@ -81,6 +98,12 @@ class TestTensionDetector:
         assert len(guardian_tension) > 0
 
     def test_detect_contradiction_defensive_broad_catch(self):
+        """Test detection of contradiction between precise checks and broad catches.
+
+        Verifies that when code has precise defensive patterns (null checks,
+        type checks) combined with broad exception catches, the detector
+        identifies this as a contradiction tension.
+        """
         detector = TensionDetector()
         structure = CodeStructure(
             defensive_patterns=[
@@ -112,6 +135,12 @@ class TestTensionDetector:
         assert len(contradictions) > 0
 
     def test_detect_abandonment_wip_indicators(self):
+        """Test detection of abandonment through work-in-progress indicators.
+
+        Verifies that naming patterns containing TODO, FIXME, temp, or hack
+        keywords are detected as abandonment tensions with the 'Unfinished
+        Symphony' classification.
+        """
         detector = TensionDetector()
         structure = CodeStructure(
             naming_patterns=[
@@ -134,6 +163,11 @@ class TestTensionDetector:
         assert len(unfinished) > 0
 
     def test_detect_abandonment_empty_handlers(self):
+        """Test detection of abandonment through empty error handlers.
+
+        Verifies that error handlers that suppress exceptions without proper
+        handling are detected as 'Unspoken Failures' abandonment tensions.
+        """
         detector = TensionDetector()
         structure = CodeStructure(
             error_handlers=[
@@ -152,6 +186,12 @@ class TestTensionDetector:
         assert len(unspoken) > 0
 
     def test_detect_over_engineering_fortress(self):
+        """Test detection of over-engineering through excessive defensive patterns.
+
+        Verifies that an excessive number of defensive patterns relative to
+        function count is detected as a 'Fortress of Paranoia' over-engineering
+        tension.
+        """
         detector = TensionDetector()
         structure = CodeStructure(
             defensive_patterns=[
@@ -169,6 +209,12 @@ class TestTensionDetector:
         assert len(fortress) > 0
 
     def test_detect_over_engineering_fear_failure(self):
+        """Test detection of over-engineering through excessive error handlers.
+
+        Verifies that an excessive number of error handlers relative to
+        function count is detected as a 'Fear of Failure' over-engineering
+        tension.
+        """
         detector = TensionDetector()
         structure = CodeStructure(
             error_handlers=[
@@ -186,6 +232,11 @@ class TestTensionDetector:
         assert len(fear) > 0
 
     def test_detect_over_engineering_deep_nesting(self):
+        """Test detection of over-engineering through deep nesting levels.
+
+        Verifies that code with excessive nesting depths (6+ levels) is
+        detected as an 'Endless Descent' over-engineering tension.
+        """
         detector = TensionDetector()
         structure = CodeStructure(
             nesting_depths=[6, 7, 8, 6, 7],
@@ -200,6 +251,11 @@ class TestTensionDetector:
         assert len(descent) > 0
 
     def test_detect_under_engineering_no_error_handling(self):
+        """Test detection of under-engineering through missing error handling.
+
+        Verifies that code with many functions but no error handlers is
+        detected as 'Optimistic Ignorance' under-engineering tension.
+        """
         detector = TensionDetector()
         structure = CodeStructure(
             error_handlers=[],
@@ -214,6 +270,12 @@ class TestTensionDetector:
         assert len(optimistic) > 0
 
     def test_detect_under_engineering_no_defensive(self):
+        """Test detection of under-engineering through missing defensive patterns.
+
+        Verifies that code with many functions but no defensive patterns
+        (null checks, type checks) is detected as 'Open Door Policy'
+        under-engineering tension.
+        """
         detector = TensionDetector()
         structure = CodeStructure(
             defensive_patterns=[],
@@ -228,6 +290,12 @@ class TestTensionDetector:
         assert len(open_door) > 0
 
     def test_detect_under_engineering_no_classes(self):
+        """Test detection of under-engineering through lack of class structure.
+
+        Verifies that code with many functions but no classes is detected
+        as 'Flat World' under-engineering tension, indicating missing
+        abstraction layers.
+        """
         detector = TensionDetector()
         structure = CodeStructure(
             function_count=30,
@@ -242,6 +310,12 @@ class TestTensionDetector:
         assert len(flat_world) > 0
 
     def test_overall_tension_level(self):
+        """Test that overall tension level is calculated correctly.
+
+        Verifies that when tensions are detected, the analysis includes
+        a non-zero overall tension level representing the aggregate
+        severity of all detected tensions.
+        """
         detector = TensionDetector()
         structure = CodeStructure(
             guard_clauses=[
@@ -261,6 +335,12 @@ class TestTensionDetector:
         assert analysis.overall_tension_level > 0
 
     def test_resolution_suggestions(self):
+        """Test that resolution suggestions are provided for detected tensions.
+
+        Verifies that when tensions are detected, the analysis includes
+        actionable resolution suggestions to help address the identified
+        code quality issues.
+        """
         detector = TensionDetector()
         structure = CodeStructure(
             guard_clauses=[
@@ -281,6 +361,12 @@ class TestTensionDetector:
             assert len(analysis.resolution_suggestions) > 0
 
     def test_primary_conflict(self):
+        """Test that the primary conflict is identified from detected tensions.
+
+        Verifies that when multiple tensions are detected, the analysis
+        identifies the most significant tension as the primary conflict
+        for prioritized attention.
+        """
         detector = TensionDetector()
         structure = CodeStructure(
             guard_clauses=[
